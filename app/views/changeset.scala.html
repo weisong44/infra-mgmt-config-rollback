@@ -1,0 +1,132 @@
+@(
+	csList: List[models.ChangeSet],
+	csForm: Form[models.ChangeSet] 
+)
+
+@import helper._
+
+@main("Cluster list") {
+    
+    <script>
+    function editChangeSet (id) {
+        var form = document.createElement('form');
+        form.setAttribute('method', 'post');
+        form.setAttribute('action', '/changesets/edit/' + id);
+        form.style.display = 'hidden';
+        document.body.appendChild(form)
+        form.submit();
+    }
+    function stageChangeSet (id) {
+        var form = document.createElement('form');
+        form.setAttribute('method', 'post');
+        form.setAttribute('action', '/changesets/stage/' + id);
+        form.style.display = 'hidden';
+        document.body.appendChild(form)
+        form.submit();
+    }
+    function deleteChangeSet (id) {
+        var form = document.createElement('form');
+        form.setAttribute('method', 'post');
+        form.setAttribute('action', '/changesets/delete/' + id);
+        form.style.display = 'hidden';
+        document.body.appendChild(form)
+        form.submit();
+    }
+    function submitChangeSet (id) {
+        var form = document.createElement('form');
+        form.setAttribute('method', 'post');
+        form.setAttribute('action', '/changesets/submit/' + id);
+        form.style.display = 'hidden';
+        document.body.appendChild(form)
+        form.submit();
+    }
+    function approveChangeSet (id) {
+        var form = document.createElement('form');
+        form.setAttribute('method', 'post');
+        form.setAttribute('action', '/changesets/approve/' + id);
+        form.style.display = 'hidden';
+        document.body.appendChild(form)
+        form.submit();
+    }
+    function publishChangeSet (id) {
+        var form = document.createElement('form');
+        form.setAttribute('method', 'post');
+        form.setAttribute('action', '/changesets/publish/' + id);
+        form.style.display = 'hidden';
+        document.body.appendChild(form)
+        form.submit();
+    }
+    function rollbackChangeSet (id) {
+        var form = document.createElement('form');
+        form.setAttribute('method', 'post');
+        form.setAttribute('action', '/changesets/rollback/' + id);
+        form.style.display = 'hidden';
+        document.body.appendChild(form)
+        form.submit();
+    }
+    </script>
+    
+    <h1>ChangeSet: @csList.size()</h1>
+    
+	<table>
+	  <tr>
+	    <th>ID</th>
+	    <th>State</th>
+	    <th>Seq</th>
+	    <th>Created by</th>
+	    <th>Updated by</th>
+	    <th>Editing</th>
+	    <th>Approving</th>
+	    <th>Approved</th>
+	    <th>Published</th>
+	    <th>Rejected</th>
+	    <th>Staged</th>
+	    <th>Other</th>
+	  </tr>
+        @for(cs <- csList) {
+		  <tr>
+		    <td>@cs.id</td>
+		    <td>@cs.state</td>
+		    <td>@cs.publishSequence</td>
+		    <td>@cs.createdBy</td>
+		    <td>@cs.updatedBy</td>
+		    <td>
+			    @if("editing".equals(cs.state.toString())) {
+		          <button type="button" onclick="submitChangeSet('@cs.id');">Submit</button>
+		          <button type="button" onclick="stageChangeSet('@cs.id');">Stage</button>
+	    		}
+		    </td>
+		    <td>
+			    @if("approving".equals(cs.state.toString())) {
+		          <button type="button" onclick="approveChangeSet('@cs.id');">Approve</button>
+	    		}
+		    </td>
+		    <td>
+			    @if("approved".equals(cs.state.toString())) {
+		          <button type="button" onclick="publishChangeSet('@cs.id');">Publish</button>
+	    		}
+		    </td>
+		    <td>
+			    @if("published".equals(cs.state.toString())) {
+				  <button type="button" onclick="rollbackChangeSet('@cs.id');">Rollback</button>
+	    		}
+		    </td>
+		    <td>
+			    @if("rejected".equals(cs.state.toString())) {
+				  <button type="button" onclick="editChangeSet('@cs.id');">Edit</button>
+	    		}
+		    </td>
+		    <td>
+			    @if("staged".equals(cs.state.toString())) {
+				  <button type="button" onclick="editChangeSet('@cs.id');">Edit</button>
+	    		}
+		    </td>
+		    <td>
+			    @if("published".equals(cs.state.toString()) == false) {
+				  <button type="button" onclick="deleteChangeSet('@cs.id');">Delete</button>
+	    		}
+		    </td>
+		  </tr>
+        }
+	</table>    
+}

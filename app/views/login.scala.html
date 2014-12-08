@@ -1,0 +1,19 @@
+@(loginForm: Form[models.Login])
+
+@import helper._
+
+@main("Login") {
+
+
+    @form(routes.Application.authenticate()) {
+
+	   <h1>Sign in</h1>
+	   <p>
+	        @inputText(loginForm("username"), args = 'size -> 32, 'placeholder -> "john") 
+	        @inputPassword(loginForm("password"), args = 'size -> 32, 'placeholder -> "password") 
+	        <input type="submit" value="Login">
+	   </p>
+	   
+	}
+
+}

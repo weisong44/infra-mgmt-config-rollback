@@ -1,0 +1,59 @@
+@(
+	clusterList: List[models.VmsCluster],
+	vmsClusterForm: Form[models.VmsCluster] 
+)
+
+@import helper._
+
+@main("Cluster list") {
+    
+    <script>
+    function deleteVmsCluster (name) {
+        var form = document.createElement('form');
+        form.setAttribute('method', 'post');
+        form.setAttribute('action', '/vms/clusters/delete/' + name);
+        form.style.display = 'hidden';
+        document.body.appendChild(form)
+        form.submit();
+    }
+    </script>
+    
+    <h1>VMS Cluster: @clusterList.size()</h1>
+    
+	<table>
+	  <tr>
+	    <th>Name</th>
+	    <th>Address</th>
+	    <th>OpId</th>
+	    <th>OpType</th>
+	    <th>CsId</th>
+	    <th>User</th>
+	    <th>Seq</th>
+	    <th>State</th>
+	  </tr>
+        @for(c <- clusterList) {
+		  <tr>
+		    <td>@c.name</td>
+		    <td>@c.address</td>
+		    <td>@c.op.id</td>
+		    <td>@c.op.getType().toString()</td>
+		    <td>@c.op.changeSetId</td>
+		    <td>@c.cs.createdBy</td>
+		    <td>@c.cs.publishSequence</td>
+		    <td>@c.cs.getState().toString()</td>
+		    <td><button type="button" onclick="deleteVmsCluster('@c.name');">Delete</button></td>
+		  </tr>
+        }
+	</table>    
+    
+    <h2>Add a new cluster</h2>
+    
+    @form(routes.Application.addVmsCluster()) {
+        
+        @inputText(vmsClusterForm("name"), args = 'size -> 32, 'placeholder -> "mycluster") 
+        @inputText(vmsClusterForm("address"), args = 'size -> 64, 'placeholder -> "1.1.1.1") 
+        
+        <input type="submit" value="Create/update">
+        
+    }
+}

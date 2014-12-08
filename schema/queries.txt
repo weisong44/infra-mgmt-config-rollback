@@ -1,0 +1,43 @@
+--
+-- Select all published pathes
+--
+select c.*, t1.seq, t1.owner from (
+  select * from (
+      select c.id, c.path, c.change_set_id, cs.seq, cs.owner from c
+          join cs on c.change_set_id=cs.id
+          where cs.seq is not null 
+          order by path, seq desc
+      ) t2
+      group by path
+  ) t1
+join c on t1.id=c.id
+where c.type != 'D';
+
+
+--
+-- Select change set 7, 9 on top of all published pathes
+-- NOTE: order matters! the highest precedence gets largest seq value
+--
+select c.*, t1.seq, t1.seq2, t1.owner from (
+  select * from (
+    select c.id, c.path, c.change_set_id, t3.seq, t3.seq2, t3.owner from c
+      join (
+        select *,
+          case    
+            when seq > 0 then seq 
+            when id=7 then 200000
+            when id=9 then 100000
+            else null 
+          end as seq2 
+        from cs 
+        where seq > 0 or id in (7,9)
+      ) t3 
+      on c.change_set_id=t3.id
+      where t3.seq2 is not null 
+      order by path, seq2 desc
+  ) t2
+  group by path
+) t1
+join c on t1.id=c.id
+where c.type != 'D';
+

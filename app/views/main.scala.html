@@ -1,0 +1,44 @@
+@(title: String)(content: Html)
+
+@import util._
+
+<!DOCTYPE html>
+
+<html>
+    <script>
+    function login (username) {
+        var form = document.createElement('form');
+        form.setAttribute('method', 'post');
+        form.setAttribute('action', '/login/' + username);
+        form.style.display = 'hidden';
+        document.body.appendChild(form)
+        form.submit();
+    }
+    </script>
+
+    <head>
+        <title>@title</title>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+        <script src="@routes.Assets.at("javascripts/hello.js")" type="text/javascript"></script>
+    </head>
+    <body>
+    	<a href="/login">Login</a>
+    	|
+    	<a href="/zknodeops">Zk Nodes</a>
+    	|
+    	<a href="/changesets">Change Set</a>
+    	|
+    	<a href="/vms/clusters">Cluster</a>
+    	
+    	<p>
+		User: [ @ContextHolder.get().curUser ] - Switch user:      	
+		<button type="button" onclick="login('test');">test</button>
+		<button type="button" onclick="login('john');">john</button>
+		<button type="button" onclick="login('alice');">alice</button>
+    	</p>
+		
+        @content
+        
+    </body>
+</html>

@@ -1,0 +1,43 @@
+@(ops: List[models.ZkNodeOp], zkNodeOpForm: Form[models.ZkNodeOp])
+
+@import helper._
+
+@main("Todo list") {
+    
+    <h1>ZK Node Operation: @ops.size()</h1>
+
+	<table>
+	  <tr>
+	    <th>Id</th>
+	    <th>Type</th>
+	    <th>Change set</th>
+	    <th>Class</th>
+	    <th>Path</th>
+	    <th>Value</th>
+	  </tr>
+        @for(op <- ops) {
+		  <tr>
+		    <td>@op.id</td>
+		    <td>@op.getType().toString()</td>
+		    <td>@op.changeSetId</td>
+		    <td>@op.tag0</td>
+		    <td>@op.path</td>
+		    <td>@op.value</td>
+		  </tr>
+        }
+	</table>    
+
+    <h2>Add a new operation</h2>
+    
+    @form(routes.Application.createZkNodeOps()) {
+        
+        @inputText(zkNodeOpForm("path"), args = 'size -> 32, 'placeholder -> "/default/path") 
+        @inputText(zkNodeOpForm("value"), args = 'size -> 64, 'placeholder -> "default_value=100") 
+        @inputText(zkNodeOpForm("type"), args = 'size -> 1, 'placeholder -> "C") 
+        @inputText(zkNodeOpForm("changeSetId"), args = 'size -> 16, 'placeholder -> "100") 
+        @inputText(zkNodeOpForm("createdBy"), args = 'size -> 32, 'placeholder -> "jbond") 
+        
+        <input type="submit" value="Create">
+        
+    }
+}
