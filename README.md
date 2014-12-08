@@ -17,3 +17,16 @@ This demo shows the key concept of config center core, namely
    - Show a list of change sets on top of published
    - Note: the order of change sets here matters, it finally determines the visibility of a change
 
+To run the app
+ - Extract to a directory
+ - You will need to point to a MySQL, see conf/application.conf
+ - Run ./activator
+ - Type in “run”, which starts the app in dev mode
+ - Connect to http://localhost:9000/login
+   - Initially, it will ask you to create the DB schema, after that you could play with it
+   - First login
+   - Then create/modify/delete VMS clusters
+   - Then you can switch users
+   - Move change sets through states of change sets, and see what is each users’s view 
+   - See all ZK nodes
+
