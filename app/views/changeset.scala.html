@@ -48,6 +48,14 @@
         document.body.appendChild(form)
         form.submit();
     }
+    function rejectChangeSet (id) {
+        var form = document.createElement('form');
+        form.setAttribute('method', 'post');
+        form.setAttribute('action', '/changesets/reject/' + id);
+        form.style.display = 'hidden';
+        document.body.appendChild(form)
+        form.submit();
+    }
     function publishChangeSet (id) {
         var form = document.createElement('form');
         form.setAttribute('method', 'post');
@@ -99,6 +107,7 @@
 		    <td>
 			    @if("approving".equals(cs.state.toString())) {
 		          <button type="button" onclick="approveChangeSet('@cs.id');">Approve</button>
+		          <button type="button" onclick="rejectChangeSet('@cs.id');">Reject</button>
 	    		}
 		    </td>
 		    <td>

@@ -12,8 +12,13 @@ import util.JsonUtil;
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.RawSql;
 import com.avaje.ebean.RawSqlBuilder;
+import com.google.common.collect.Lists;
 
 public class ZkNodeOpDao {
+	
+	public enum ChangeSetStrategy {
+		publishedOnly, includeActive, includePending 
+	}
 
 	final static String querySql = "select c.id, c.type, c.path, c.value, c.change_set_id, c.tag0 from (" +
 		"	  select * from (" +
@@ -74,10 +79,7 @@ public class ZkNodeOpDao {
 		return sql;
 	}
 	
-	public static <T extends DomainObject> List<T> findForCurUserIncPendingChangeSets(Class<T> type) {
-		
-		List<ChangeSet> csList = ChangeSetDao.findCurrentNonPublished(false);
-		
+	public static <T extends DomainObject> List<T> findByType(Class<T> type, List<ChangeSet> csList) {
 		String sql = replaceSql(csList.toArray(new ChangeSet[csList.size()]));
 		String whereClause = " where c.type != 'D' and c.tag0='" + type.getSimpleName() + "'";
 		sql += whereClause;
@@ -100,6 +102,29 @@ public class ZkNodeOpDao {
 			list.add(o);
 		}
 		return list;
+	}
+	
+	public static <T extends DomainObject> List<T> findByType(Class<T> type, ChangeSetStrategy strategy) {
+		
+		List<ChangeSet> csList = null;
+		switch(strategy) {
+		case publishedOnly:
+			csList = new ArrayList<>();
+			break;
+		case includeActive:
+			ChangeSet cs = ChangeSetDao.getCurrent();
+			csList = cs == null ? 
+				new ArrayList<ChangeSet>()
+			  : Lists.asList(ChangeSetDao.getCurrent(), new ChangeSet[0]);
+			break;
+		case includePending:
+			csList = ChangeSetDao.findPending(false);
+			break;
+		default:
+			break;
+		}
+		
+		return findByType(type, csList);
 	}
 
 	public static <T extends DomainObject> List<T> findByTypeAndPath(Class<T> type, String path) {

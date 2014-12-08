@@ -1,4 +1,5 @@
 @(
+	viewType: String,
 	clusterList: List[models.VmsCluster],
 	vmsClusterForm: Form[models.VmsCluster] 
 )
@@ -18,7 +19,14 @@
     }
     </script>
     
-    <h1>VMS Cluster: @clusterList.size()</h1>
+    <h1>VMS Cluster: @clusterList.size()</h1> 
+    
+    <h3>
+    	View:  @viewType - Switch view: 
+    		<a href="/vms/clusters/published">Published</a>
+	    |	<a href="/vms/clusters/active">Active</a>
+	    |	<a href="/vms/clusters/pending">Pending</a>
+    </h3> 
     
 	<table>
 	  <tr>
@@ -28,8 +36,9 @@
 	    <th>OpType</th>
 	    <th>CsId</th>
 	    <th>User</th>
-	    <th>Seq</th>
+	    <th>Sequence</th>
 	    <th>State</th>
+	    <th>Other</th>
 	  </tr>
         @for(c <- clusterList) {
 		  <tr>

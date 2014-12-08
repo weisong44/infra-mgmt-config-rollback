@@ -22,7 +22,9 @@ public class Application extends Controller {
 	static Form<VmsCluster> vmsClusterForm = Form.form(VmsCluster.class);
 
 	public static Result index() {
-		return ok("Hello world!");
+        return redirect(
+            routes.Application.login()
+        );
 	}
 
 	public static Result login() {
@@ -65,10 +67,35 @@ public class Application extends Controller {
 	}
 
 	public static Result listVmsClusters() {
+		return listVmsClustersIncludePendingChangeSet();
+	}
+	
+	public static Result listVmsClustersIncludePublishedOnly() {
 		populateContext();
 		return ok(
 			views.html.vmscluster.render(
-				ZkNodeOpDao.findForCurUserIncPendingChangeSets(VmsCluster.class), 
+				"Published",
+				ZkNodeOpDao.findByType(VmsCluster.class, ZkNodeOpDao.ChangeSetStrategy.publishedOnly), 
+				vmsClusterForm)
+		);
+	}
+
+	public static Result listVmsClustersIncludePendingChangeSet() {
+		populateContext();
+		return ok(
+			views.html.vmscluster.render(
+				"Pending",
+				ZkNodeOpDao.findByType(VmsCluster.class, ZkNodeOpDao.ChangeSetStrategy.includePending), 
+				vmsClusterForm)
+		);
+	}
+
+	public static Result listVmsClustersIncludeActiveChangeSet() {
+		populateContext();
+		return ok(
+			views.html.vmscluster.render(
+				"Active",
+				ZkNodeOpDao.findByType(VmsCluster.class, ZkNodeOpDao.ChangeSetStrategy.includeActive), 
 				vmsClusterForm)
 		);
 	}
@@ -78,7 +105,8 @@ public class Application extends Controller {
 		Form<VmsCluster> filledForm = vmsClusterForm.bindFromRequest();
 		if (filledForm.hasErrors()) {
 			return badRequest(views.html.vmscluster.render(
-				ZkNodeOpDao.findForCurUserIncPendingChangeSets(VmsCluster.class), 
+				"Pending",
+				ZkNodeOpDao.findByType(VmsCluster.class, ZkNodeOpDao.ChangeSetStrategy.includePending), 
 				filledForm));
 		} else {
 			VmsClusterDao.createOrUpdate(filledForm.get());
@@ -133,6 +161,11 @@ public class Application extends Controller {
 		return modifyChangeSet(id, ChangeSet.State.approving);
 	}
 	
+	public static Result rejectChangeSet(String id) {
+		assertChangeSet(id, ChangeSet.State.approving);
+		return modifyChangeSet(id, ChangeSet.State.rejected);
+	}
+	
 	public static Result approveChangeSet(String id) {
 		assertChangeSet(id, ChangeSet.State.approving);
 		return modifyChangeSet(id, ChangeSet.State.approved);
@@ -145,7 +178,7 @@ public class Application extends Controller {
 	
 	public static Result rollbackChangeSet(String id) {
 		assertChangeSet(id, ChangeSet.State.published);
-		return modifyChangeSet(id, ChangeSet.State.rejected);
+		return modifyChangeSet(id, ChangeSet.State.staged);
 	}
 	
 	public static Result deleteChangeSet(String id) {

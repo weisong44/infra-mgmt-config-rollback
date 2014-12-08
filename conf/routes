@@ -21,6 +21,7 @@ POST    /changesets/edit/:id         controllers.Application.editChangeSet(id)
 POST    /changesets/stage/:id        controllers.Application.stageChangeSet(id)
 POST    /changesets/submit/:id       controllers.Application.submitChangeSet(id)
 POST    /changesets/approve/:id      controllers.Application.approveChangeSet(id)
+POST    /changesets/reject/:id       controllers.Application.rejectChangeSet(id)
 POST    /changesets/publish/:id      controllers.Application.publishChangeSet(id)
 POST    /changesets/rollback/:id     controllers.Application.rollbackChangeSet(id)
 
@@ -28,6 +29,9 @@ POST    /changesets/rollback/:id     controllers.Application.rollbackChangeSet(i
 GET     /vms/clusters               controllers.Application.listVmsClusters()
 POST    /vms/clusters               controllers.Application.addVmsCluster()
 POST    /vms/clusters/delete/:name  controllers.Application.deleteVmsCluster(name)
+GET     /vms/clusters/active        controllers.Application.listVmsClustersIncludeActiveChangeSet()
+GET     /vms/clusters/pending       controllers.Application.listVmsClustersIncludePendingChangeSet()
+GET     /vms/clusters/published     controllers.Application.listVmsClustersIncludePublishedOnly()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

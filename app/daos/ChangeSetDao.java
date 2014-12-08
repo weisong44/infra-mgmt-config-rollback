@@ -33,7 +33,7 @@ public class ChangeSetDao {
 		return max;
 	}
 
-	public static List<ChangeSet> findCurrentNonPublished(boolean latestFirst) {
+	public static List<ChangeSet> findPending(boolean latestFirst) {
 		List<ChangeSet.State> stateList = new ArrayList<>();
 		stateList.add(ChangeSet.State.editing);
 		stateList.add(ChangeSet.State.approved);
@@ -45,7 +45,7 @@ public class ChangeSetDao {
 			return exprList.order("updatedAt desc").findList();
 		}
 		else {
-			return exprList.findList();
+			return exprList.order("updatedAt").findList();
 		}
 	}
 	
