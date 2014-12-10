@@ -3,16 +3,16 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index()
+GET     /                            controllers.Application.index()
 
 # Login
-GET     /login                      controllers.Application.login()
-POST    /login                      controllers.Application.authenticate()
-POST    /login/:username            controllers.Application.switchUser(username)
+GET     /login                       controllers.Application.login()
+POST    /login                       controllers.Application.authenticate()
+POST    /login/:username             controllers.Application.switchUser(username)
 
 # ZkNodeOp
-GET     /zknodeops                  controllers.Application.zkNodeOps()
-POST    /zknodeops                  controllers.Application.createZkNodeOps()
+GET     /zknodeops                   controllers.Application.zkNodeOps()
+POST    /zknodeops                   controllers.Application.createZkNodeOps()
 
 # ChangeSet
 GET     /changesets                  controllers.Application.listChangeSet()
@@ -26,12 +26,12 @@ POST    /changesets/publish/:id      controllers.Application.publishChangeSet(id
 POST    /changesets/rollback/:id     controllers.Application.rollbackChangeSet(id)
 
 #VMS cluster
-GET     /vms/clusters               controllers.Application.listVmsClusters()
-POST    /vms/clusters               controllers.Application.addVmsCluster()
-POST    /vms/clusters/delete/:name  controllers.Application.deleteVmsCluster(name)
-GET     /vms/clusters/active        controllers.Application.listVmsClustersIncludeActiveChangeSet()
-GET     /vms/clusters/pending       controllers.Application.listVmsClustersIncludePendingChangeSet()
-GET     /vms/clusters/published     controllers.Application.listVmsClustersIncludePublishedOnly()
+GET     /vms/clusters                controllers.Application.listVmsClusters()
+POST    /vms/clusters                controllers.Application.addVmsCluster()
+POST    /vms/clusters/delete/:name   controllers.Application.deleteVmsCluster(name)
+GET     /vms/clusters/active         controllers.Application.listVmsClustersIncludeActiveChangeSet()
+GET     /vms/clusters/pending        controllers.Application.listVmsClustersIncludePendingChangeSet()
+GET     /vms/clusters/published      controllers.Application.listVmsClustersIncludePublishedOnly()
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET     /assets/*file                controllers.Assets.at(path="/public", file)

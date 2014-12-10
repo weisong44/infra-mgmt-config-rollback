@@ -17,7 +17,7 @@ import com.google.common.collect.Lists;
 public class ZkNodeOpDao {
 	
 	public enum ChangeSetStrategy {
-		publishedOnly, includeActive, includePending 
+		publishedOnly, active, pending 
 	}
 
 	final static String querySql = "select c.id, c.type, c.path, c.value, c.change_set_id, c.tag0 from (" +
@@ -111,13 +111,13 @@ public class ZkNodeOpDao {
 		case publishedOnly:
 			csList = new ArrayList<>();
 			break;
-		case includeActive:
+		case active:
 			ChangeSet cs = ChangeSetDao.getCurrent();
 			csList = cs == null ? 
 				new ArrayList<ChangeSet>()
 			  : Lists.asList(ChangeSetDao.getCurrent(), new ChangeSet[0]);
 			break;
-		case includePending:
+		case pending:
 			csList = ChangeSetDao.findPending(false);
 			break;
 		default:

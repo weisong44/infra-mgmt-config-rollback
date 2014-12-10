@@ -13,6 +13,7 @@ import util.ContextHolder;
 import daos.ChangeSetDao;
 import daos.VmsClusterDao;
 import daos.ZkNodeOpDao;
+import daos.ZkNodeOpDao.ChangeSetStrategy;
 
 public class Application extends Controller {
 
@@ -71,42 +72,34 @@ public class Application extends Controller {
 	}
 	
 	public static Result listVmsClustersIncludePublishedOnly() {
-		populateContext();
-		return ok(
-			views.html.vmscluster.render(
-				"Published",
-				ZkNodeOpDao.findByType(VmsCluster.class, ZkNodeOpDao.ChangeSetStrategy.publishedOnly), 
-				vmsClusterForm)
-		);
+		return listVmsClusters("Published", ChangeSetStrategy.publishedOnly);
 	}
 
 	public static Result listVmsClustersIncludePendingChangeSet() {
-		populateContext();
-		return ok(
-			views.html.vmscluster.render(
-				"Pending",
-				ZkNodeOpDao.findByType(VmsCluster.class, ZkNodeOpDao.ChangeSetStrategy.includePending), 
-				vmsClusterForm)
-		);
+		return listVmsClusters("Pending", ChangeSetStrategy.pending);
 	}
 
 	public static Result listVmsClustersIncludeActiveChangeSet() {
+		return listVmsClusters("Active", ChangeSetStrategy.active);
+	}
+
+	private static Result listVmsClusters(String label, ChangeSetStrategy strategy) {
 		populateContext();
 		return ok(
 			views.html.vmscluster.render(
-				"Active",
-				ZkNodeOpDao.findByType(VmsCluster.class, ZkNodeOpDao.ChangeSetStrategy.includeActive), 
+				label,
+				ZkNodeOpDao.findByType(VmsCluster.class, strategy), 
 				vmsClusterForm)
 		);
 	}
-
+	
 	public static Result addVmsCluster() {
 		populateContext();
 		Form<VmsCluster> filledForm = vmsClusterForm.bindFromRequest();
 		if (filledForm.hasErrors()) {
 			return badRequest(views.html.vmscluster.render(
 				"Pending",
-				ZkNodeOpDao.findByType(VmsCluster.class, ZkNodeOpDao.ChangeSetStrategy.includePending), 
+				ZkNodeOpDao.findByType(VmsCluster.class, ChangeSetStrategy.pending), 
 				filledForm));
 		} else {
 			VmsClusterDao.createOrUpdate(filledForm.get());
